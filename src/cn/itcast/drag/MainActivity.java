@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.widget.ImageView;
-//Í¼Æ¬µÄËõ·ÅºÍÍÏ¶¯,¶àµã´¥¿Ø
+//å›¾ç‰‡çš„ç¼©æ”¾å’Œæ‹–åŠ¨,å¤šç‚¹è§¦æ§
 public class MainActivity extends Activity {
     private ImageView imageView;
     
@@ -29,49 +29,50 @@ public class MainActivity extends Activity {
     	private int mode = 0;
     	private static final int DRAG = 1;
     	private static final int ZOOM = 2;
-    	private float startDis;//¿ªÊ¼¾àÀë
-    	private PointF midPoint;//ÖĞ¼äµã
+    	private float startDis;//å¼€å§‹è·ç¦»
+    	private PointF midPoint;//ä¸­é—´ç‚¹
     	
 		public boolean onTouch(View v, MotionEvent event) {
-			//Ê¹ÓÃswitch (event.getAction())¿ÉÒÔ´¦ÀíACTION_DOWNºÍACTION_UPÊÂ¼ş;
-			//Ê¹ÓÃswitch (event.getAction() & MotionEvent.ACTION_MASK)¾Í¿ÉÒÔ´¦Àí´¦Àí¶àµã´¥ÃşµÄACTION_POINTER_DOWNºÍACTION_POINTER_UPÊÂ¼ş¡£
+			//ä½¿ç”¨switch (event.getAction())å¯ä»¥å¤„ç†ACTION_DOWNå’ŒACTION_UPäº‹ä»¶;
+			//ä½¿ç”¨switch (event.getAction() & MotionEvent.ACTION_MASK)å°±å¯ä»¥å¤„ç†å¤„ç†å¤šç‚¹è§¦æ‘¸çš„ACTION_POINTER_DOWNå’ŒACTION_POINTER_UPäº‹ä»¶ã€‚
+			//ä¸æ“ä½œ(255)å¾—åˆ°ä½å…«ä½
 			switch (event.getAction() & MotionEvent.ACTION_MASK) {
-			case MotionEvent.ACTION_DOWN://ÊÖÖ¸Ñ¹ÏÂÆÁÄ»
+			case MotionEvent.ACTION_DOWN://æ‰‹æŒ‡å‹ä¸‹å±å¹•
 				mode = DRAG;
-				currentMatrix.set(imageView.getImageMatrix());//¼ÇÂ¼ImageViewµ±Ç°µÄÒÆ¶¯Î»ÖÃ
+				currentMatrix.set(imageView.getImageMatrix());//è®°å½•ImageViewå½“å‰çš„ç§»åŠ¨ä½ç½®
 				startPoint.set(event.getX(), event.getY());
 				break;
 
-			case MotionEvent.ACTION_MOVE://ÊÖÖ¸ÔÚÆÁÄ»ÒÆ¶¯£¬¸ÃÊÂ¼ş»á²»¶ÏµØ´¥·¢
+			case MotionEvent.ACTION_MOVE://æ‰‹æŒ‡åœ¨å±å¹•ç§»åŠ¨ï¼Œè¯¥äº‹ä»¶ä¼šä¸æ–­åœ°è§¦å‘
 				if(mode == DRAG){
-					float dx = event.getX() - startPoint.x;//µÃµ½ÔÚxÖáµÄÒÆ¶¯¾àÀë
-					float dy = event.getY() - startPoint.y;//µÃµ½ÔÚyÖáµÄÒÆ¶¯¾àÀë
-					matrix.set(currentMatrix);//ÔÚÃ»ÓĞ½øĞĞÒÆ¶¯Ö®Ç°µÄÎ»ÖÃ»ù´¡ÉÏ½øĞĞÒÆ¶¯
-					//Æ½ÒÆ
+					float dx = event.getX() - startPoint.x;//å¾—åˆ°åœ¨xè½´çš„ç§»åŠ¨è·ç¦»
+					float dy = event.getY() - startPoint.y;//å¾—åˆ°åœ¨yè½´çš„ç§»åŠ¨è·ç¦»
+					matrix.set(currentMatrix);//åœ¨æ²¡æœ‰è¿›è¡Œç§»åŠ¨ä¹‹å‰çš„ä½ç½®åŸºç¡€ä¸Šè¿›è¡Œç§»åŠ¨
+					//å¹³ç§»
 					matrix.postTranslate(dx, dy);
-				}else if(mode == ZOOM){//Ëõ·Å
-					float endDis = distance(event);//½áÊø¾àÀë
+				}else if(mode == ZOOM){//ç¼©æ”¾
+					float endDis = distance(event);//ç»“æŸè·ç¦»
 					if(endDis > 10f){
-						float scale = endDis / startDis;//µÃµ½Ëõ·Å±¶Êı
+						float scale = endDis / startDis;//å¾—åˆ°ç¼©æ”¾å€æ•°
 						matrix.set(currentMatrix);
-						//Ëõ·ÅpostScaleÔ­Ê¼¾ØÕóÔÚÓÒ±ß£¬preScaleÔ­Ê¼¾ØÕóÔÚ×ó±ß
+						//ç¼©æ”¾postScaleåŸå§‹çŸ©é˜µåœ¨å³è¾¹ï¼ŒpreScaleåŸå§‹çŸ©é˜µåœ¨å·¦è¾¹
 						matrix.postScale(scale, scale, midPoint.x, midPoint.y);
 					}
 				}				
 				break;
 				
-			case MotionEvent.ACTION_UP://ÊÖÖ¸Àë¿ªÆÁ
-			case MotionEvent.ACTION_POINTER_UP://ÓĞÊÖÖ¸Àë¿ªÆÁÄ»,µ«ÆÁÄ»»¹ÓĞ´¥µã£¨ÊÖÖ¸£©
+			case MotionEvent.ACTION_UP://æ‰‹æŒ‡ç¦»å¼€å±
+			case MotionEvent.ACTION_POINTER_UP://æœ‰æ‰‹æŒ‡ç¦»å¼€å±å¹•,ä½†å±å¹•è¿˜æœ‰è§¦ç‚¹ï¼ˆæ‰‹æŒ‡ï¼‰
 				mode = 0;
 				break;
 				
-			case MotionEvent.ACTION_POINTER_DOWN://µ±ÆÁÄ»ÉÏ»¹ÓĞ´¥µã£¨ÊÖÖ¸£©£¬ÔÙÓĞÒ»¸öÊÖÖ¸Ñ¹ÏÂÆÁÄ»,´ËÊ±eventÖĞ°üº¬Á½¸ö´¥µãµÄ×ø±ê
+			case MotionEvent.ACTION_POINTER_DOWN://å½“å±å¹•ä¸Šè¿˜æœ‰è§¦ç‚¹ï¼ˆæ‰‹æŒ‡ï¼‰ï¼Œå†æœ‰ä¸€ä¸ªæ‰‹æŒ‡å‹ä¸‹å±å¹•,æ­¤æ—¶eventä¸­åŒ…å«ä¸¤ä¸ªè§¦ç‚¹çš„åæ ‡
 				mode = ZOOM;
 				startDis = distance(event);
-				//Á½¸öÊÖÖ¸µÄ¾àÀëÏñËØ´óÓÚ10
+				//ä¸¤ä¸ªæ‰‹æŒ‡çš„è·ç¦»åƒç´ å¤§äº10
 				if(startDis > 10f){
 					midPoint = mid(event);
-					currentMatrix.set(imageView.getImageMatrix());//¼ÇÂ¼ImageViewµ±Ç°µÄËõ·Å±¶Êı
+					currentMatrix.set(imageView.getImageMatrix());//è®°å½•ImageViewå½“å‰çš„ç¼©æ”¾å€æ•°
 				}
 				break;
 			}
@@ -81,7 +82,7 @@ public class MainActivity extends Activity {
     	
     }
     /**
-     * ¼ÆËãÁ½´¥µãÖ®¼äµÄ¾àÀë
+     * è®¡ç®—ä¸¤è§¦ç‚¹ä¹‹é—´çš„è·ç¦»
      * @param event
      * @return
      */
@@ -91,7 +92,7 @@ public class MainActivity extends Activity {
 		return FloatMath.sqrt(dx*dx + dy*dy);
 	}
 	/**
-	 * ¼ÆËãÁ½´¥µãÖ®¼äµÄÖĞ¼äµã
+	 * è®¡ç®—ä¸¤è§¦ç‚¹ä¹‹é—´çš„ä¸­é—´ç‚¹
 	 * @param event
 	 * @return
 	 */
